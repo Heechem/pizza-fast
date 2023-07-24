@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { Form, redirect, useNavigate, useNavigation } from 'react-router-dom';
+import {
+  Form,
+  redirect,
+  useActionData,
+  useNavigate,
+  useNavigation,
+} from 'react-router-dom';
 import { formatDate } from '../../utilities/helpers';
 import { createOrder } from '../../services/apiRestaurant';
 
@@ -37,6 +43,7 @@ function CreateOrder() {
   const navigation = useNavigation();
   console.log(navigation);
   const isSubmitting = navigation.state === 'submitting';
+  const fromErrors = useActionData();
   // const [withPriority, setWithPriority] = useState(false);
   const cart = fakeCart;
 
@@ -62,6 +69,7 @@ function CreateOrder() {
               name="phone"
               required
             />
+            {fromErrors?.phone && <p>{fromErrors.phone}</p>}
           </div>
         </div>
 
@@ -111,7 +119,16 @@ export async function action({ request }) {
     cart: JSON.parse(data.cart),
     priority: data.priority === 'on',
   };
+
+  const errors = {};
+  if (!isValidPhone(order.phone))
+    errors.phone = 'Please provide a correct phone number!!';
+
+  if (Object.keys(errors).length > 0) return errors;
+
+  // if all the info are correct new order created and redirect
   const newOrder = await createOrder(order);
+
   return redirect(`/order/${newOrder.id}`);
 }
 
