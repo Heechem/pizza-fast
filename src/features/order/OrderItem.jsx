@@ -4,7 +4,7 @@ function OrderItem({ item, isLoadingIngredients, ingredients }) {
   const { quantity, name, totalPrice } = item;
 
   return (
-    <li>
+    <li className="">
       <div>
         <p>
           <span>{quantity}&times;</span> {name}
