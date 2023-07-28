@@ -50,3 +50,11 @@ export const {
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
+
+export const getTotalCartNumber = (state) =>
+  state.cart.cart.reduce((sum, cur) => sum + cur.quantity, 0);
+
+export const getTotalCartPrice = (state) =>
+  state.cart.cart.reduce((sum, cur) => sum + cur.totalPrice, 0);
+
+// reselect library
