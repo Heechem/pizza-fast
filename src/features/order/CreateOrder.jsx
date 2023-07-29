@@ -43,7 +43,11 @@ const fakeCart = [
 function CreateOrder() {
   const dispatch = useDispatch();
   const [withPriority, setWithPriority] = useState(false);
-  const username = useSelector((state) => state.user.username);
+  const { username, satuts, addressStatus, position, address } = useSelector(
+    (state) => state.user,
+  );
+
+  const isLoadingAddress = addressStatus === "loading";
   const navigation = useNavigation();
 
   const isSubmitting = navigation.state === "submitting";
@@ -90,20 +94,25 @@ function CreateOrder() {
               className="input w-full "
               type="text"
               name="address"
+              disabled={isLoadingAddress}
               required
+              defaultValue={address}
             />
           </div>
-          <span className="absolute right-[3px] z-50">
-            <Button
-              type="small"
-              onClick={(e) => {
-                e.preventDefault();
-                dispatch(fetchAddress());
-              }}
-            >
-              get position
-            </Button>
-          </span>
+          {!position.latitude && !position.longitude && (
+            <span className="absolute right-[3px] z-50">
+              <Button
+                disabled={isLoadingAddress}
+                type="small"
+                onClick={(e) => {
+                  e.preventDefault();
+                  dispatch(fetchAddress());
+                }}
+              >
+                get position
+              </Button>
+            </span>
+          )}
         </div>
 
         <div className="mb-12 flex items-center gap-5 ">
@@ -122,7 +131,7 @@ function CreateOrder() {
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <Button disabled={isSubmitting} type="primary">
+          <Button disabled={isSubmitting || isLoadingAddress} type="primary">
             {isSubmitting
               ? "is ordering "
               : `Order Now for ${formatCurrency(totalCartPrice)}`}
