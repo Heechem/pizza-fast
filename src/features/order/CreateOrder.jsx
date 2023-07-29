@@ -41,6 +41,7 @@ const fakeCart = [
 ];
 
 function CreateOrder() {
+  const dispatch = useDispatch();
   const [withPriority, setWithPriority] = useState(false);
   const username = useSelector((state) => state.user.username);
   const navigation = useNavigation();
@@ -70,7 +71,7 @@ function CreateOrder() {
           />
         </div>
 
-        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className=" mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">Phone number</label>
           <div className="grow">
             <input className="input w-full " type="tel" name="phone" required />
@@ -82,7 +83,7 @@ function CreateOrder() {
           </div>
         </div>
 
-        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="relative mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">Address</label>
           <div className="grow">
             <input
@@ -92,6 +93,17 @@ function CreateOrder() {
               required
             />
           </div>
+          <span className="absolute right-[3px] z-50">
+            <Button
+              type="small"
+              onClick={(e) => {
+                e.preventDefault();
+                dispatch(fetchAddress());
+              }}
+            >
+              get position
+            </Button>
+          </span>
         </div>
 
         <div className="mb-12 flex items-center gap-5 ">
