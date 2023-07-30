@@ -43,9 +43,13 @@ const fakeCart = [
 function CreateOrder() {
   const dispatch = useDispatch();
   const [withPriority, setWithPriority] = useState(false);
-  const { username, satuts, addressStatus, position, address } = useSelector(
-    (state) => state.user,
-  );
+  const {
+    username,
+    status: addressStatus,
+    position,
+    address,
+    error: errorAddress,
+  } = useSelector((state) => state.user);
 
   const isLoadingAddress = addressStatus === "loading";
   const navigation = useNavigation();
@@ -98,9 +102,14 @@ function CreateOrder() {
               required
               defaultValue={address}
             />
+            {addressStatus === "error" && (
+              <p className="tex-xs mt-2 rounded-full p-2 text-red-600">
+                {errorAddress}
+              </p>
+            )}
           </div>
           {!position.latitude && !position.longitude && (
-            <span className="absolute right-[3px] z-50">
+            <span className="md:righ-[5px] absolute right-[3px] top-[3.5px] z-50 md:top-[5px]">
               <Button
                 disabled={isLoadingAddress}
                 type="small"
@@ -131,6 +140,15 @@ function CreateOrder() {
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
+          <input
+            type="hidden"
+            name="position"
+            value={
+              position.longitude && position.latitude
+                ? `${position.latitue},${position.longitude}`
+                : ""
+            }
+          />
           <Button disabled={isSubmitting || isLoadingAddress} type="primary">
             {isSubmitting
               ? "is ordering "
